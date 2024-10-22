@@ -5,7 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>World Currencies</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/heroicons@2.0.18/24/outline/esm/index.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @keyframes copyAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        .copy-animation {
+            animation: copyAnimation 0.3s ease-in-out;
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto px-4 py-8">
@@ -64,11 +74,14 @@
                         <p>${code} - ${data.symbol}</p>
                     </div>
                     <button class="copy-btn p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300" aria-label="Copy currency information">
-                        <heroicon-outline-clipboard-document class="w-5 h-5 text-gray-600"></heroicon-outline-clipboard-document>
+                        <i class="fas fa-copy text-gray-600"></i>
                     </button>
                 `;
                 const copyBtn = currencyItem.querySelector('.copy-btn');
-                copyBtn.addEventListener('click', () => copyCurrencyInfo(data.name, code, data.symbol));
+                copyBtn.addEventListener('click', (e) => {
+                    copyCurrencyInfo(data.name, code, data.symbol);
+                    animateCopyButton(e.currentTarget);
+                });
                 currencyList.appendChild(currencyItem);
             }
         }
@@ -80,6 +93,13 @@
             }).catch(err => {
                 console.error('Failed to copy text: ', err);
             });
+        }
+
+        function animateCopyButton(button) {
+            button.classList.add('copy-animation');
+            button.addEventListener('animationend', () => {
+                button.classList.remove('copy-animation');
+            }, { once: true });
         }
 
         function searchCurrencies(query) {
